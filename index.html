@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vue Piano</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.3.4/vue-resource.min.js"></script>
+  <script src="main.js"></script>  
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+  <div id="app">
+    <div class="audioPlayer" v-for="sound in soundPack" :key="sound.id">
+      <!-- <label>{{sound.number}}</label>
+        <button @click="playSound (sound.number)">{{sound.number}}</button>        -->
+      <audio :data-key="sound.number">
+        <source :src="sound.url" type="audio/ogg">
+      </audio>
+    </div>
+    <div class="center_box">
+      <h2>Vue.js Piano Project</h2>
+      <div class="keyboard">
+        <div class="pianokeys" v-for="piano_key in piano_keys" :key="piano_key.id">
+          <div class="white key" v-if="piano_key.type==='white'" @click="addNotes(piano_key.num)" :class="highlightEvent(piano_key.num)? 'playing': ''" :data-key="piano_key.key">
+            <label>{{String.fromCharCode(piano_key.key)}}</label>
+          </div>
+          <div class="black key" v-if="piano_key.type==='black'" @click="addNotes(piano_key.num)" :class="highlightEvent(piano_key.num)? 'playing': ''" :data-key="piano_key.key">
+            <label>{{String.fromCharCode(piano_key.key)}}</label>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="controls">
+        <ul class="notes_list" v-if="notes.length > 0">
+          <li v-for="(note, id) in notes" :key="note.id" :class="now_note_id - 1 === id? 'playing':''">
+            <div class="num">{{note.num}}</div>
+            <div class="time">{{note.time}}</div>
+          </li>
+        </ul>
+        <button @click="playNext">Play Next!</button>
+        <button @click="loadSample">Sample</button>
+        <button @click="startPlay" v-if="playing_time <= 1">Play
+          <i class="fa fa-play" aria-hidden="true"></i>
+        </button>
+        <button @click="stopPlay" v-if="playing_time > 1">Stop
+          <i class="fa fa-pause" aria-hidden="true"></i>
+        </button>
+        <button @click="recordEvent">Record
+          <i class="fa fa-circle" aria-hidden="true" v-if="recorder == 0"></i>
+          <i class="fa fa-stop" aria-hidden="true" v-if="recorder > 0"></i>
+        </button>
+        <button @click="resetEvent">Reset</button>
+        <h4>{{playing_time + recording_time}}</h4>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
